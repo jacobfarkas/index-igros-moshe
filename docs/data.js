@@ -29,8 +29,8 @@ var VOLUMES = [
   {
     id: 2,
     title: "כרך ב׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
+    subtitle: "יורה דעה (א)",
+    hebrewBooksReq: 917,
     sections: null
   },
   {
