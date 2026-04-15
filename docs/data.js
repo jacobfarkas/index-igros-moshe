@@ -26,7 +26,7 @@ const VOLUMES = [
   {
     id: 1,
     title: "כרך א׳",
-    subtitle: "אורח חיים (א), קדשים",
+    subtitle: "אורח חיים (א), קדשים (א)",
     hebrewBooksReq: 916,
     sections: [
       {
