@@ -21,7 +21,7 @@
   <!-- Search -->
   <div class="search-wrap">
     <input type="search" id="searchInput" class="form-control"
-           placeholder="חיפוש בכרך זה..." autocomplete="off">
+           placeholder="חיפוש בכל הכרכים..." autocomplete="off">
   </div>
 
   <!-- Content -->
@@ -46,39 +46,63 @@
   var content = document.getElementById('content');
   var searchInput = document.getElementById('searchInput');
 
-  loadVolume(VOL_ID).then(function(vol) {
+  loadAllVolumes().then(function() {
+    var vol = getVolume(VOL_ID);
     if (!vol) { content.innerHTML = '<p>לא נמצא כרך</p>'; return; }
 
     document.getElementById('volSub').textContent = vol.title + (vol.subtitle ? ' – ' + vol.subtitle : '');
     document.title = 'אגרות משה – ' + vol.title;
 
-    var BASE = 'https://hebrewbooks.org/pdfpager.aspx?req=' + vol.hebrewBooksReq + '&pgnum=';
-
-    function renderAll(filter) {
-      var results = filter ? searchVolume(VOL_ID, filter) : null;
+    function renderVolume() {
       var html = '';
-
+      var BASE = 'https://hebrewbooks.org/pdfpager.aspx?req=' + vol.hebrewBooksReq + '&pgnum=';
       for (var s = 0; s < vol.sections.length; s++) {
         var sec = vol.sections[s];
         if (!sec.simanim || sec.simanim.length === 0) continue;
-
-        var items = filter
-          ? results.filter(function(r) { return r.sectionName === sec.name; })
-          : sec.simanim.map(function(arr) {
-              return { siman: arr[1], desc: arr[2], page: arr[0] };
-            });
-
-        if (items.length === 0) continue;
-
         if (sec.name) {
           html += '<div class="section-title">' + sec.name + '</div>';
         }
-
         html += '<ul class="siman-list">';
-        for (var i = 0; i < items.length; i++) {
-          var it = items[i];
-          var url = BASE + it.page;
+        for (var i = 0; i < sec.simanim.length; i++) {
+          var arr = sec.simanim[i];
+          var url = BASE + arr[0];
           html += '<li><a href="' + url + '" target="_blank" rel="noopener">'
+            + '<div class="siman-top">'
+            + '<span class="siman-name">סימן ' + arr[1] + '</span>'
+            + '<span class="page-num">' + arr[0] + '</span>'
+            + '</div>'
+            + '<div class="siman-desc">' + arr[2] + '</div>'
+            + '</a></li>';
+        }
+        html += '</ul>';
+      }
+      content.innerHTML = html;
+    }
+
+    function renderSearchResults(query) {
+      var results = searchAll(query);
+      if (results.length === 0) {
+        content.innerHTML = '<div style="text-align:center;padding:40px 16px;color:var(--ink-faint);">לא נמצאו תוצאות</div>';
+        return;
+      }
+      var groups = {};
+      var order = [];
+      for (var i = 0; i < results.length; i++) {
+        var r = results[i];
+        if (!groups[r.volId]) {
+          groups[r.volId] = { title: r.volTitle, items: [] };
+          order.push(r.volId);
+        }
+        groups[r.volId].items.push(r);
+      }
+      var html = '';
+      for (var j = 0; j < order.length; j++) {
+        var g = groups[order[j]];
+        html += '<div class="result-group-title">' + g.title + '</div>';
+        html += '<ul class="siman-list">';
+        for (var k = 0; k < g.items.length; k++) {
+          var it = g.items[k];
+          html += '<li><a href="' + it.url + '" target="_blank" rel="noopener">'
             + '<div class="siman-top">'
             + '<span class="siman-name">סימן ' + it.siman + '</span>'
             + '<span class="page-num">' + it.page + '</span>'
@@ -88,11 +112,6 @@
         }
         html += '</ul>';
       }
-
-      if (filter && html === '') {
-        html = '<div style="text-align:center;padding:40px 16px;color:var(--ink-faint);">לא נמצאו תוצאות</div>';
-      }
-
       content.innerHTML = html;
     }
 
@@ -100,10 +119,16 @@
     searchInput.addEventListener('input', function() {
       clearTimeout(debounce);
       var q = this.value.trim();
-      debounce = setTimeout(function() { renderAll(q || null); }, 200);
+      debounce = setTimeout(function() {
+        if (q.length > 0) {
+          renderSearchResults(q);
+        } else {
+          renderVolume();
+        }
+      }, 200);
     });
 
-    renderAll(null);
+    renderVolume();
   });
 })();
 </script>
