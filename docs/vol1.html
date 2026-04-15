@@ -10,8 +10,8 @@
 <body>
 
 <div class="sefer-header">
-  <h1 id="volTitle">טוען...</h1>
-  <div class="sub" id="volSub"></div>
+  <h1 id="volTitle">אגרות משה</h1>
+  <div class="sub" id="volSub">טוען...</div>
 </div>
 
 <div class="container">
@@ -49,8 +49,7 @@
   loadVolume(VOL_ID).then(function(vol) {
     if (!vol) { content.innerHTML = '<p>לא נמצא כרך</p>'; return; }
 
-    document.getElementById('volTitle').textContent = vol.title;
-    document.getElementById('volSub').textContent = vol.subtitle || 'אגרות משה – מפתח';
+    document.getElementById('volSub').textContent = vol.title + (vol.subtitle ? ' – ' + vol.subtitle : '');
     document.title = 'אגרות משה – ' + vol.title;
 
     var BASE = 'https://hebrewbooks.org/pdfpager.aspx?req=' + vol.hebrewBooksReq + '&pgnum=';
