@@ -26,7 +26,9 @@
   <div class="search-results" id="searchResults"></div>
 
   <!-- Volume grid (hidden when searching) -->
-  <div class="vol-grid" id="volGrid"></div>
+  <div class="vol-grid" id="volGrid">
+    <div class="text-center py-4" style="color:var(--ink-faint);">טוען...</div>
+  </div>
 
 </div>
 
@@ -40,35 +42,32 @@
 <script src="search.js"></script>
 <script>
 (function() {
-  const grid = document.getElementById('volGrid');
-  const searchInput = document.getElementById('searchInput');
-  const searchResults = document.getElementById('searchResults');
+  var grid = document.getElementById('volGrid');
+  var searchInput = document.getElementById('searchInput');
+  var searchResults = document.getElementById('searchResults');
 
-  // Render volume cards
   function renderGrid() {
-    let html = '<div class="row g-3">';
-    for (const vol of VOLUMES) {
-      const count = countSimanim(vol);
-      const isEmpty = count === 0;
-      const cls = isEmpty ? 'vol-card empty' : 'vol-card';
-      const href = isEmpty ? '#' : 'vol' + vol.id + '.html';
+    var html = '<div class="row g-3">';
+    for (var i = 0; i < VOLUMES.length; i++) {
+      var vol = VOLUMES[i];
+      var count = countSimanim(vol);
+      var isEmpty = count === 0;
+      var cls = isEmpty ? 'vol-card empty' : 'vol-card';
+      var href = isEmpty ? '#' : 'vol' + vol.id + '.html';
 
-      html += `
-        <div class="col-6 col-md-4">
-          <a href="${href}" class="${cls}">
-            <div class="vol-title">${vol.title}</div>
-            ${vol.subtitle ? '<div class="vol-sub">' + vol.subtitle + '</div>' : ''}
-            <div class="vol-count">${isEmpty ? 'בקרוב' : count + ' סימנים'}</div>
-          </a>
-        </div>`;
+      html += '<div class="col-6 col-md-4">'
+        + '<a href="' + href + '" class="' + cls + '">'
+        + '<div class="vol-title">' + vol.title + '</div>'
+        + (vol.subtitle ? '<div class="vol-sub">' + vol.subtitle + '</div>' : '')
+        + '<div class="vol-count">' + (isEmpty ? 'בקרוב' : count + ' סימנים') + '</div>'
+        + '</a></div>';
     }
     html += '</div>';
     grid.innerHTML = html;
   }
 
-  // Render global search results grouped by volume
   function renderSearchResults(query) {
-    const results = searchAll(query);
+    var results = searchAll(query);
 
     if (results.length === 0) {
       searchResults.innerHTML = '<div class="no-results">לא נמצאו תוצאות</div>';
@@ -76,25 +75,31 @@
     }
 
     // Group by volume
-    const groups = {};
-    for (const r of results) {
-      if (!groups[r.volId]) groups[r.volId] = { title: r.volTitle, items: [] };
+    var groups = {};
+    var order = [];
+    for (var i = 0; i < results.length; i++) {
+      var r = results[i];
+      if (!groups[r.volId]) {
+        groups[r.volId] = { title: r.volTitle, items: [] };
+        order.push(r.volId);
+      }
       groups[r.volId].items.push(r);
     }
 
-    let html = '';
-    for (const volId of Object.keys(groups)) {
-      const g = groups[volId];
-      html += `<div class="result-group-title">${g.title}</div>`;
+    var html = '';
+    for (var j = 0; j < order.length; j++) {
+      var g = groups[order[j]];
+      html += '<div class="result-group-title">' + g.title + '</div>';
       html += '<ul class="siman-list">';
-      for (const r of g.items) {
-        html += `<li><a href="${r.url}" target="_blank" rel="noopener">
-          <div class="siman-top">
-            <span class="siman-name">סימן ${r.siman}׳</span>
-            <span class="page-num">${r.page}</span>
-          </div>
-          <div class="siman-desc">${r.desc}</div>
-        </a></li>`;
+      for (var k = 0; k < g.items.length; k++) {
+        var it = g.items[k];
+        html += '<li><a href="' + it.url + '" target="_blank" rel="noopener">'
+          + '<div class="siman-top">'
+          + '<span class="siman-name">סימן ' + it.siman + '׳</span>'
+          + '<span class="page-num">' + it.page + '</span>'
+          + '</div>'
+          + '<div class="siman-desc">' + it.desc + '</div>'
+          + '</a></li>';
       }
       html += '</ul>';
     }
@@ -102,12 +107,10 @@
     searchResults.innerHTML = html;
   }
 
-  // Search handler
-  let debounce;
+  var debounce;
   searchInput.addEventListener('input', function() {
     clearTimeout(debounce);
-    const q = this.value.trim();
-
+    var q = this.value.trim();
     debounce = setTimeout(function() {
       if (q.length > 0) {
         grid.style.display = 'none';
@@ -121,7 +124,10 @@
     }, 200);
   });
 
-  renderGrid();
+  // Load all volumes then render
+  loadAllVolumes().then(function() {
+    renderGrid();
+  });
 })();
 </script>
 
