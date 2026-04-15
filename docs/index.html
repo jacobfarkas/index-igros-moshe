@@ -59,7 +59,7 @@
         + '<a href="' + href + '" class="' + cls + '">'
         + '<div class="vol-title">' + vol.title + '</div>'
         + (vol.subtitle ? '<div class="vol-sub">' + vol.subtitle + '</div>' : '')
-        + '<div class="vol-count">' + (isEmpty ? 'בקרוב' : count + ' סימנים') + '</div>'
+        + (isEmpty ? '<div class="vol-count">בקרוב</div>' : '')
         + '</a></div>';
     }
     html += '</div>';
