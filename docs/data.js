@@ -64,8 +64,8 @@ var VOLUMES = [
   {
     id: 7,
     title: "כרך ז׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
+    subtitle: "אבן העזר (ד), חושן משפט (ב)",
+    hebrewBooksReq: 921,
     sections: null
   },
   {
