@@ -74,13 +74,6 @@ var VOLUMES = [
     subtitle: "",
     hebrewBooksReq: 0,
     sections: null
-  },
-  {
-    id: 9,
-    title: "כרך ט׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
-    sections: null
   }
 ];
 
