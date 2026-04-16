@@ -50,8 +50,8 @@ var VOLUMES = [
   {
     id: 5,
     title: "כרך ה׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
+    subtitle: "יורה דעה (ב), אורח חיים (ג), אבן העזר (ג)",
+    hebrewBooksReq: 919,
     sections: null
   },
   {
