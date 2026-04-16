@@ -57,8 +57,8 @@ var VOLUMES = [
   {
     id: 6,
     title: "כרך ו׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
+    subtitle: "אורח חיים (ד), יורה דעה (ג)",
+    hebrewBooksReq: 920,
     sections: null
   },
   {
