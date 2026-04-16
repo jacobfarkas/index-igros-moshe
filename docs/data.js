@@ -36,8 +36,8 @@ var VOLUMES = [
   {
     id: 3,
     title: "כרך ג׳",
-    subtitle: "",
-    hebrewBooksReq: 0,
+    subtitle: "אבן העזר (א)",
+    hebrewBooksReq: 59509,
     sections: null
   },
   {
